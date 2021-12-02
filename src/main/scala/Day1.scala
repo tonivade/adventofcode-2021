@@ -13,5 +13,5 @@ object Day1:
 @main def main: Unit = 
   val numbers = Source.fromFile("input/day1.txt").getLines.map(_.toInt).toList
 
-  println(Day1.part1(numbers))
-  println(Day1.part2(numbers))
+  println(s"Day1 part1: ${Day1.part1(numbers)}")
+  println(s"Day1 part2: ${Day1.part2(numbers)}")
