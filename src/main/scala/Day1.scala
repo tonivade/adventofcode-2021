@@ -10,7 +10,7 @@ object Day1:
     val sums = input.sliding(3).map(_.sum).toList
     part1(sums)
 
-@main def main: Unit = 
+@main def main1: Unit = 
   val numbers = Source.fromFile("input/day1.txt").getLines.map(_.toInt).toList
 
   println(s"Day1 part1: ${Day1.part1(numbers)}")
