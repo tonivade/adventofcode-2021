@@ -8,3 +8,6 @@ class Day2Test:
   @Test def part1(): Unit = 
     assertEquals(150, Day2.part1(list))
 
+  @Test def part2(): Unit = 
+    assertEquals(900, Day2.part2(list))
+
