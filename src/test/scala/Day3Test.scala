@@ -1,6 +1,5 @@
 import org.junit.Test
 import org.junit.Assert.*
-import org.junit.Ignore
 
 class Day3Test:
 
@@ -21,6 +20,5 @@ class Day3Test:
   @Test def part1(): Unit = 
     assertEquals(198, Day3.part1(list))
 
-  @Test @Ignore def part2(): Unit = ???
-
-
+  @Test def part2(): Unit = 
+    assertEquals(230, Day3.part2(list))
