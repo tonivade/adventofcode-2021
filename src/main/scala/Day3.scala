@@ -3,7 +3,7 @@ import scala.annotation.tailrec
 
 object Day3:
   def binaryToInt(binary: String): Int = 
-    binary.reverse.zipWithIndex.map((x, i) => if (x == '1') 1 << i else 0).sum
+    binary.reverse.zipWithIndex.filter((x, _) => x == '1').map((_, i) => 1 << i).sum
 
   def countBits(input: List[String]): Seq[Iterable[List[Char]]] = 
     (0 until input(0).size)
