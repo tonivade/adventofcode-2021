@@ -28,7 +28,7 @@ object Day4:
       row.isDefined || col.isDefined
     
     def score: Int = 
-      matrix.values.filter(n => !drawn.contains(n)).sum
+      matrix.values.filterNot(drawn.contains).sum
 
   case class Game(numbers: Seq[Int], boards: Seq[Board]):
     def take: (Game, Int) = 
