@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.annotation.tailrec
 
 object Day3:
   def binaryToInt(binary: String): Int = 
@@ -25,40 +26,34 @@ object Day3:
 
     binaryToInt(gamma) * binaryToInt(epsilon)
 
-  def calculateO2(input: List[String]): Int =
-    var x = input
-    var y = 0
-    while (x.size > 1) {
-      val counted = countBits(x).toList
-      var c = counted(y).toList.map(_.size) match {
-        case List(i, j) => if (i > j) '1' else if (i < j) '0' else '1'
+  @tailrec
+  def calculateO2(input: List[String], y: Int = 0): Int =
+    if (input.size == 1) 
+      input.map(binaryToInt)(0)
+    else
+      val counted = countBits(input)
+      val c = counted(y).toList.map(_.size) match {
+        case List(i, j) if (i > j) => '1'
+        case List(i, j) if (i < j) => '0'
+        case _ => '1'
       }
+      calculateO2(input.filter(_(y) == c), y + 1)
 
-      x = x.filter(_(y) == c)
-      y = y + 1
-    }
-    x.map(binaryToInt)(0)
-
-  def calculateCO2(input: List[String]): Int =
-    var x = input
-    var y = 0
-    while (x.size > 1) {
-      val counted = countBits(x).toList
-      var c = counted(y).toList.map(_.size) match {
-        case List(i, j) => if (i > j) '0' else if (i < j) '1' else '0'
+  @tailrec
+  def calculateCO2(input: List[String], y: Int = 0): Int =
+    if (input.size == 1) 
+      input.map(binaryToInt)(0)
+    else
+      val counted = countBits(input)
+      val c = counted(y).toList.map(_.size) match {
+        case List(i, j) if (i > j) => '0'
+        case List(i, j) if (i < j) => '1'
+        case _ => '0'
       }
-
-      x = x.filter(_(y) == c)
-      y = y + 1
-    }
-    x.map(binaryToInt)(0)
+      calculateCO2(input.filter(_(y) == c), y + 1)
 
   def part2(input: List[String]): Int =
-
-    val o2 = calculateO2(input)
-    val co2 = calculateCO2(input)
-
-    o2 * co2
+    calculateO2(input) * calculateCO2(input)
 
 @main def main3: Unit = 
   val input = Source.fromFile("input/day3.txt").getLines.toList
