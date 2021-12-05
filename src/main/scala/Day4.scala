@@ -14,7 +14,7 @@ object Day4:
 
     def win: Boolean = 
       val positions = matrix.filter {
-        case (position, num) => drawn.contains(num)
+        case (_, num) => drawn.contains(num)
       }.keySet
       
       val row = (0 to 5).find { x =>
