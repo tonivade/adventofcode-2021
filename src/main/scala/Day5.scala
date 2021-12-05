@@ -28,7 +28,11 @@ object Day5:
         (Math.min(start.x, end.x) to Math.max(start.x, end.x)).map { x =>
           Position(x, end.y)
         }.toList
-      else ???
+      else {
+        val x = start.x to end.x by (if (start.x < end.x) 1 else -1)
+        val y = start.y to end.y by (if (start.y < end.y) 1 else -1)
+        x.zip(y).map(Position(_, _)).toList
+      }
 
   def parse(input: String): Array[Line] = 
     input.split("\n").map { line =>
@@ -41,10 +45,14 @@ object Day5:
   def part1(input: String): Int = 
     val parsed = parse(input)
     val all = parsed.filterNot(_.diagonal).flatMap(_.draw)
-    val grouped = all.groupBy(identity).mapValues(_.size).filter { case (p, x) => x > 1 }
+    val grouped = all.groupBy(identity).mapValues(_.size).filter { case (_, x) => x > 1 }
     grouped.size
 
-  def part2(input: String): Int = ???
+  def part2(input: String): Int =
+    val parsed = parse(input)
+    val all = parsed.flatMap(_.draw)
+    val grouped = all.groupBy(identity).mapValues(_.size).filter { case (_, x) => x > 1 }
+    grouped.size
 
 @main def main5: Unit = 
   val input = Source.fromFile("input/day5.txt").mkString
