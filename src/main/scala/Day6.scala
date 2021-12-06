@@ -3,27 +3,32 @@ import scala.annotation.tailrec
 
 object Day6:
 
-  case class Fish(eta: Int)
-
   @tailrec
-  def step(days: Int, fishes: List[Fish]): List[Fish] = 
+  def step(days: Int, fishes: Map[Int, Long]): Map[Int, Long] = 
     if (days == 0)
       fishes
     else 
-      step(days - 1, fishes.flatMap {
-        case Fish(eta) if (eta == 0) => List(Fish(6), Fish(8))
-        case Fish(eta) => List(Fish(eta - 1))
-      })
+      val fishes0 = fishes.getOrElse(0, 0L)
+      step(days - 1, Map(
+        0 -> fishes.getOrElse(1, 0L), 
+        1 -> fishes.getOrElse(2, 0L), 
+        2 -> fishes.getOrElse(3, 0L), 
+        3 -> fishes.getOrElse(4, 0L), 
+        4 -> fishes.getOrElse(5, 0L), 
+        5 -> fishes.getOrElse(6, 0L), 
+        6 -> (fishes.getOrElse(7, 0L) + fishes0),
+        7 -> fishes.getOrElse(8, 0L),
+        8 -> fishes0))
 
-  def parse(input: String): List[Fish] =
-    input.split(",").map(_.toInt).map(Fish(_)).toList
+  def parse(input: String): Map[Int, Long] =
+    input.split(",").map(_.toInt).groupBy(identity).map((a, b) => (a, b.size.toLong)).toMap
 
-  def part1(input: String): Int = 
-    step(80, parse(input)).size
+  def part1(input: String): Long = 
+    step(80, parse(input)).values.sum
 
   // this not going to work
-  def part2(input: String): Int = 
-    step(256, parse(input)).size
+  def part2(input: String): Long = 
+    step(256, parse(input)).values.sum
 
 @main def main6: Unit = 
   val input = Source.fromFile("input/day6.txt").getLines.next
