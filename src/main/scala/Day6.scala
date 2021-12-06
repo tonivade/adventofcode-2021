@@ -26,7 +26,6 @@ object Day6:
   def part1(input: String): Long = 
     step(80, parse(input)).values.sum
 
-  // this not going to work
   def part2(input: String): Long = 
     step(256, parse(input)).values.sum
 
