@@ -3,8 +3,9 @@ import scala.annotation.tailrec
 
 object Day6:
 
-  case class Fish(eta: BigInt)
+  case class Fish(eta: Int)
 
+  @tailrec
   def step(days: Int, fishes: List[Fish]): List[Fish] = 
     if (days == 0)
       fishes
@@ -20,6 +21,7 @@ object Day6:
   def part1(input: String): Int = 
     step(80, parse(input)).size
 
+  // this not going to work
   def part2(input: String): Int = 
     step(256, parse(input)).size
 
