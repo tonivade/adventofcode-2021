@@ -18,4 +18,4 @@ class Day8Test:
     assertEquals(26, Day8.part1(input))
 
   @Test def part2(): Unit =
-    assertEquals(0, Day8.part2(input))
+    assertEquals(61229, Day8.part2(input))

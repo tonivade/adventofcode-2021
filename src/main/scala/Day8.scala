@@ -7,7 +7,82 @@ object Day8:
     val all = input.flatMap(_.split("\\|")(1).trim.split(" "))
     all.filter(x => uniqueDigits.contains(x.size)).size
 
-  def part2(input: List[String]): Int = ???
+  /*
+   * acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
+   * 
+   *           0. ??????
+   *  dddd     1. ab            x1. a
+   * e    a    2. ?????         x2. b
+   * e    a    3. ?????         x3. d
+   *  ffff     4. eafb          x4. e
+   * g    b    5. ?????         x5. f
+   * g    b    6. ??????        x6. g
+   *  cccc     7. dab           x7. c
+   *           8. acedgfb
+   *           9. ??????
+   * 
+   * 2 -> 1
+   * 3 -> 7
+   * 4 -> 4
+   * 5 -> 2 3 5
+   * 6 -> 0 6 9
+   * 7 -> 8
+   */
+  def part2(input: List[String]): Int = 
+    val left = input.map(_.split("\\|")(0).trim.split(" ").toList)
+    val right = input.map(_.split("\\|")(1).trim.split(" ").toList)
+    val all = left zip right
+
+    all.map {
+      (dictionary, values) => translate(values, translation(dictionary))
+    }.sum
+  
+  def translate(output: List[String], translate: Map[String, Int]): Int = 
+    output.map(_.sorted).map(translate).mkString.toInt
+
+  def translation(input: List[String]): Map[String, Int] =
+    
+    val one = input.find(x => x.size == 2).get
+    val seven = input.find(x => x.size == 3).get
+    val four = input.find(x => x.size == 4).get
+    val eight = input.find(x => x.size == 7).get
+
+    val (nine, zeroOrSix) = parse9(input, four)
+    val (three, twoOrFive) = parse3(input, one)
+    val (two, five) = parse2or5(twoOrFive, nine)
+    val (zero, six) = parse0or6(zeroOrSix, one)
+
+    Map.empty 
+      + (one.sorted -> 1) 
+      + (two.sorted -> 2) 
+      + (three.sorted -> 3) 
+      + (four.sorted -> 4) 
+      + (five.sorted -> 5)
+      + (six.sorted -> 6)
+      + (seven.sorted -> 7)
+      + (eight.sorted -> 8)
+      + (nine.sorted -> 9) 
+      + (zero.sorted -> 0)
+
+  def parse9(input: List[String], four: String): (String, List[String]) = 
+    val input6 = input.filter(x => x.size == 6)
+    val nine = input6.find(x => four.forall(x.contains(_))).get
+    val zeroOrSix = input6.filter(_ != nine)
+    (nine, zeroOrSix)
+
+  def parse3(input: List[String], one: String): (String, List[String]) = 
+    val input5 = input.filter(x => x.size == 5)
+    val three = input5.find(x => one.forall(x.contains(_))).get
+    val twoOrFive = input5.filter(_ != three)
+    (three, twoOrFive)
+
+  def parse2or5(twoOrFive: List[String], nine: String): (String, String) =
+    val five = twoOrFive.find(x => x.filterNot(nine.contains).isEmpty).get
+    (twoOrFive.find(_ != five).get, five)
+  
+  def parse0or6(zeroOrSix: List[String], one: String): (String, String) =
+    val zero = zeroOrSix.find(x => x.filterNot(one.contains).size == 4).get
+    (zero, zeroOrSix.find(_ != zero).get)
 
 @main def main8: Unit = 
   val input = Source.fromFile("input/day8.txt").getLines.toList
