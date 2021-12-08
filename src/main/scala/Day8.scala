@@ -1,5 +1,4 @@
 import scala.io.Source
-import scala.util.chaining._
 
 object Day8:
 
