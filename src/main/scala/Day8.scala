@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.util.chaining._
 
 object Day8:
 
@@ -8,37 +9,27 @@ object Day8:
     all.filter(x => uniqueDigits.contains(x.size)).size
 
   /*
-   * acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
-   * 
-   *           0. ??????
-   *  dddd     1. ab            x1. a
-   * e    a    2. ?????         x2. b
-   * e    a    3. ?????         x3. d
-   *  ffff     4. eafb          x4. e
-   * g    b    5. ?????         x5. f
-   * g    b    6. ??????        x6. g
-   *  cccc     7. dab           x7. c
-   *           8. acedgfb
-   *           9. ??????
-   * 
-   * 2 -> 1
-   * 3 -> 7
-   * 4 -> 4
-   * 5 -> 2 3 5
-   * 6 -> 0 6 9
-   * 7 -> 8
+   * 1. 2 segments
+   * 4. 4 segments
+   * 7. 3 segments
+   * 8. 7 segments
+   * 9. is only with 6 segments that contains all 4s segments
+   * 3. is the only with 5 segments that contains 1s segments
+   * 5. between 2 and 5, if 9s segments removed from 5 then no segments left, so this one is 5 and the other is 2
+   * 2. see 5
+   * 0. between 0 and 6, if 1s segments removed from 0 then only 4 segmets left, so this one is 0 and the other one is 6
+   * 6. see 0
    */
   def part2(input: List[String]): Int = 
     val left = input.map(_.split("\\|")(0).trim.split(" ").toList)
     val right = input.map(_.split("\\|")(1).trim.split(" ").toList)
     val all = left zip right
 
-    all.map {
-      (dictionary, values) => translate(values, translation(dictionary))
-    }.sum
+    all.map(translate).sum
   
-  def translate(output: List[String], translate: Map[String, Int]): Int = 
-    output.map(_.sorted).map(translate).mkString.toInt
+  def translate(dictionary: List[String], input: List[String]): Int = 
+    val map = translation(dictionary)
+    input.map(_.sorted).map(map).mkString.toInt
 
   def translation(input: List[String]): Map[String, Int] =
 
@@ -67,21 +58,21 @@ object Day8:
       zero.sorted -> 0)
 
   def parse9(input6: List[String], four: String): (String, List[String]) = 
-    val nine = input6.find(x => four.forall(x.contains(_))).get
+    val nine = input6.find(x => four.forall(x.contains)).get
     val zeroOrSix = input6.filter(_ != nine)
     (nine, zeroOrSix)
 
   def parse3(input5: List[String], one: String): (String, List[String]) = 
-    val three = input5.find(x => one.forall(x.contains(_))).get
+    val three = input5.find(x => one.forall(x.contains)).get
     val twoOrFive = input5.filter(_ != three)
     (three, twoOrFive)
 
   def parse2or5(twoOrFive: List[String], nine: String): (String, String) =
-    val five = twoOrFive.find(x => x.filterNot(nine.contains).isEmpty).get
+    val five = twoOrFive.find(_.filterNot(nine.contains).isEmpty).get
     (twoOrFive.find(_ != five).get, five)
   
   def parse0or6(zeroOrSix: List[String], one: String): (String, String) =
-    val zero = zeroOrSix.find(x => x.filterNot(one.contains).size == 4).get
+    val zero = zeroOrSix.find(_.filterNot(one.contains).size == 4).get
     (zero, zeroOrSix.find(_ != zero).get)
 
 @main def main8: Unit = 
