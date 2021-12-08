@@ -41,14 +41,16 @@ object Day8:
     output.map(_.sorted).map(translate).mkString.toInt
 
   def translation(input: List[String]): Map[String, Int] =
-    
-    val one = input.find(x => x.size == 2).get
-    val seven = input.find(x => x.size == 3).get
-    val four = input.find(x => x.size == 4).get
-    val eight = input.find(x => x.size == 7).get
 
-    val (nine, zeroOrSix) = parse9(input, four)
-    val (three, twoOrFive) = parse3(input, one)
+    val grouped = input.groupBy(_.length)
+    
+    val one = grouped(2)(0)
+    val seven = grouped(3)(0)
+    val four = grouped(4)(0)
+    val eight = grouped(7)(0)
+
+    val (nine, zeroOrSix) = parse9(grouped(6), four)
+    val (three, twoOrFive) = parse3(grouped(5), one)
     val (two, five) = parse2or5(twoOrFive, nine)
     val (zero, six) = parse0or6(zeroOrSix, one)
 
@@ -64,14 +66,12 @@ object Day8:
       + (nine.sorted -> 9) 
       + (zero.sorted -> 0)
 
-  def parse9(input: List[String], four: String): (String, List[String]) = 
-    val input6 = input.filter(x => x.size == 6)
+  def parse9(input6: List[String], four: String): (String, List[String]) = 
     val nine = input6.find(x => four.forall(x.contains(_))).get
     val zeroOrSix = input6.filter(_ != nine)
     (nine, zeroOrSix)
 
-  def parse3(input: List[String], one: String): (String, List[String]) = 
-    val input5 = input.filter(x => x.size == 5)
+  def parse3(input5: List[String], one: String): (String, List[String]) = 
     val three = input5.find(x => one.forall(x.contains(_))).get
     val twoOrFive = input5.filter(_ != three)
     (three, twoOrFive)
