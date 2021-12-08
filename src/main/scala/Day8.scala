@@ -54,17 +54,17 @@ object Day8:
     val (two, five) = parse2or5(twoOrFive, nine)
     val (zero, six) = parse0or6(zeroOrSix, one)
 
-    Map.empty 
-      + (one.sorted -> 1) 
-      + (two.sorted -> 2) 
-      + (three.sorted -> 3) 
-      + (four.sorted -> 4) 
-      + (five.sorted -> 5)
-      + (six.sorted -> 6)
-      + (seven.sorted -> 7)
-      + (eight.sorted -> 8)
-      + (nine.sorted -> 9) 
-      + (zero.sorted -> 0)
+    Map(
+      one.sorted -> 1, 
+      two.sorted -> 2, 
+      three.sorted -> 3, 
+      four.sorted -> 4, 
+      five.sorted -> 5,
+      six.sorted -> 6,
+      seven.sorted -> 7,
+      eight.sorted -> 8,
+      nine.sorted -> 9, 
+      zero.sorted -> 0)
 
   def parse9(input6: List[String], four: String): (String, List[String]) = 
     val nine = input6.find(x => four.forall(x.contains(_))).get
