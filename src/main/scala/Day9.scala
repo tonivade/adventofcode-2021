@@ -1,5 +1,4 @@
 import scala.io.Source
-import Day4.Position
 
 object Day9:
 
@@ -20,7 +19,23 @@ object Day9:
         None
     }.flatMap(_.toList).toList
 
-  def part1(input: List[String]): Int = 
+  def findBasins(board: Map[Position, Int]): List[List[(Position, Int)]] = 
+    board.map { (position, value) => 
+      if (position.adjacent.map(board.get).flatMap(_.toList).forall(_ > value))
+        (position, value) :: search(board, position, value)
+      else
+        List.empty
+    }.toList.filterNot(_.isEmpty)
+
+  def search(board: Map[Position, Int], position: Position, value: Int): List[(Position, Int)] =
+    val adjacents = position.adjacent.map(p => board.get(p).map((p, _))).flatMap(_.toList)
+    val r = adjacents.filter((_, x) => x > value).flatMap { 
+      case (p, 9) => List.empty
+      case (p, x) => (p, x) :: search(board, p, x)
+    }
+    r.toSet.toList
+
+  def parse(input: List[String]): Map[Position, Int] =
     val width = input(0).size
     val height = input.size
 
@@ -29,11 +44,21 @@ object Day9:
       j <- 0 until width
     } yield (Position(i, j), input(i)(j).toString.toInt)
 
-    val lowerPoints = findLowerPoints(all.toMap)
+    all.toMap
+
+  def part1(input: List[String]): Int = 
+    val map = parse(input)
+
+    val lowerPoints = findLowerPoints(map)
 
     lowerPoints.map(_ + 1).sum
 
-  def part2(input: List[String]): Int = ???
+  def part2(input: List[String]): Int =
+    val map = parse(input)
+
+    val basins = findBasins(map)
+
+    basins.map(_.size).sorted.reverse.take(3).foldLeft(1)(_ * _)
 
 @main def main9: Unit = 
   val input = Source.fromFile("input/day9.txt").getLines.toList
