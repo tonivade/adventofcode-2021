@@ -12,8 +12,8 @@ object Day8:
    * 4. 4 segments
    * 7. 3 segments
    * 8. 7 segments
-   * 9. is only with 6 segments that contains all 4s segments
-   * 3. is the only with 5 segments that contains 1s segments
+   * 9. is the only with 6 segments that contains all 4s segments
+   * 3. is the only with 5 segments that contains all 1s segments
    * 5. between 2 and 5, if 9s segments removed from 5 then no segments left, so this one is 5 and the other is 2
    * 2. see 5
    * 0. between 0 and 6, if 1s segments removed from 0 then only 4 segmets left, so this one is 0 and the other one is 6
