@@ -45,7 +45,7 @@ object Day10:
       }
     }
 
-    r.sorted.drop(r.size/2).head
+    r.sorted.drop(r.size / 2).head
 
 @main def main10: Unit = 
   val input = Source.fromFile("input/day10.txt").getLines.toList
