@@ -50,11 +50,21 @@ object Day11:
     else
       (count, input)
 
+  @tailrec
+  def sync(n: Int, input: List[List[Int]]): Int =
+    if (input.flatMap(identity).sum != 0)
+      val (_, next) = step(input)
+      sync(n + 1, next)
+    else
+      n
+
   def part1(input: List[String]): Int =
     val parsed = input.map(_.map(_.toString.toInt).toList)
     play(100, 0, parsed)._1
 
-  def part2(input: List[String]): Int = ???
+  def part2(input: List[String]): Int =
+    val parsed = input.map(_.map(_.toString.toInt).toList)
+    sync(0, parsed)
 
 @main def main11: Unit = 
   val input = Source.fromFile("input/day11.txt").getLines.toList
