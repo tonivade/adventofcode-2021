@@ -25,15 +25,22 @@ object Day11:
       y <- 0 until input.size
     } yield (x, y)
 
-    val energy = all.filter { (x, y) => increment(y)(x) > 9 }
-    val adjacentIncrement = energy.flatMap(adjacent).filter {
-        (x, y) => x > -1 && y > -1 && x < input(0).size && y < input.size
-    }
-    val (count, feedback) = adjacentIncrement.foldLeft((energy.size, increment)) {
-      case ((c, state), (x, y)) => (if (state(y)(x) > 9) c + 1 else c, state.updated(y, state(y).updated(x, state(y)(x) + 1)))
+    val after = all.foldLeft((Set.empty[(Int, Int)], increment)) {
+      case ((s, i), (x, y)) => flash(x, y)(s, i)
     }
 
-    (count, feedback.map(_.map(x => if (x > 9) 0 else x)))
+    (after._1.size, after._2.map(_.map(x => if (x > 9) 0 else x)))
+  
+  def flash(x: Int, y: Int)(state: Set[(Int, Int)], input: List[List[Int]]): (Set[(Int, Int)], List[List[Int]]) =
+    if (!state.contains(x, y) && input(y)(x) > 9)
+      val adj = adjacent(x, y).filter {
+        (x, y) => x > -1 && y > -1 && x < input(0).size && y < input.size
+      }
+      adj.foldLeft((state + ((x, y)), input)) {
+        case ((s, i), (x1, y1)) => flash(x1, y1)(s, i.updated(y1, i(y1).updated(x1, i(y1)(x1) + 1)))
+      }
+    else 
+      (state, input)
 
   @tailrec
   def play(n: Int, count: Int, input: List[List[Int]]): (Int, List[List[Int]]) =
