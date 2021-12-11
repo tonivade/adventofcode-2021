@@ -1,7 +1,4 @@
 import scala.io.Source
-import scala.util.Try
-import scala.util.Failure
-import scala.util.Success
 import scala.annotation.tailrec
 
 object Day11:
@@ -47,14 +44,14 @@ object Day11:
 
       (state.size, output.clear)
   
-    def flash(x: Int, y: Int)(state: Set[(Int, Int)], input: Board): (Set[(Int, Int)], Board) =
-      if (!state.contains(x, y) && input.get(x, y) > 9)
-        val adj = input.adjacent(x, y)
-        adj.foldLeft((state + ((x, y)), input)) {
-          case ((s, i), (x1, y1)) => flash(x1, y1)(s, i.update(x1, y1))
-        }
-      else 
-        (state, input)
+  def flash(x: Int, y: Int)(state: Set[(Int, Int)], input: Board): (Set[(Int, Int)], Board) =
+    if (!state.contains(x, y) && input.get(x, y) > 9)
+      val adj = input.adjacent(x, y)
+      adj.foldLeft((state + ((x, y)), input)) {
+        case ((s, i), (x1, y1)) => flash(x1, y1)(s, i.update(x1, y1))
+      }
+    else 
+      (state, input)
 
   @tailrec
   def play(n: Int, count: Int, input: Board): (Int, Board) =
