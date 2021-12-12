@@ -45,10 +45,10 @@ class Day12Test:
   @Test def part1S(): Unit = 
     assertEquals(10, Day12.part1(inputS))
 
-  @Test @Ignore def part1M(): Unit = 
+  @Test def part1M(): Unit = 
     assertEquals(19, Day12.part1(inputM))
 
-  @Test @Ignore def part1L(): Unit = 
+  @Test def part1L(): Unit = 
     assertEquals(226, Day12.part1(inputL))
 
   @Test @Ignore def part2(): Unit =

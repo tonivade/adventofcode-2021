@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.annotation.tailrec
 
 object Day12:
 
@@ -10,7 +11,13 @@ object Day12:
 
   case class Graph(connections: Map[Node, List[Node]]):
     def go(to: Node): List[Node] = connections(to)
-    def searchFrom(from: Node, path: List[Node] = List.empty): List[List[Node]] = ???
+    def searchFrom(from: Node, path: List[Node] = List.empty): List[Node] = 
+      go(from).flatMap {
+        case End => End :: path
+        case Start => Nil
+        case node: SmallCave => if (path.contains(node)) Nil else searchFrom(node, from :: path)
+        case node: BigCave => searchFrom(node, from :: path)
+      }
 
   def parse(input: List[String]): Graph =
     val direct: List[(Node, Node)] = input.map(_.split("-")).map {
@@ -34,7 +41,8 @@ object Day12:
 
     Graph(all.groupBy(_._1).mapValues(_.map(_._2)).toMap)
 
-  def part1(input: List[String]): Int = parse(input).searchFrom(Start).size
+  def part1(input: List[String]): Int = 
+    parse(input).searchFrom(Start).count(_ == End)
 
   def part2(input: List[String]): Int = ???
 
