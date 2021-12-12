@@ -51,5 +51,11 @@ class Day12Test:
   @Test def part1L(): Unit = 
     assertEquals(226, Day12.part1(inputL))
 
-  @Test @Ignore def part2(): Unit =
-    assertEquals(0, Day12.part2(List.empty))
+  @Test def part2S(): Unit = 
+    assertEquals(36, Day12.part2(inputS))
+
+  @Test def part2M(): Unit = 
+    assertEquals(103, Day12.part2(inputM))
+
+  @Test def part2L(): Unit = 
+    assertEquals(3509, Day12.part2(inputL))

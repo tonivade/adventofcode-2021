@@ -11,12 +11,26 @@ object Day12:
 
   case class Graph(connections: Map[Node, List[Node]]):
     def go(to: Node): List[Node] = connections(to)
-    def searchFrom(from: Node, path: List[Node] = List.empty): List[Node] = 
+    def search1(from: Node, path: List[Node] = List.empty): List[List[Node]] = 
+      val nextPath = from :: path
       go(from).flatMap {
-        case End => End :: path
         case Start => Nil
-        case node: SmallCave => if (path.contains(node)) Nil else searchFrom(node, from :: path)
-        case node: BigCave => searchFrom(node, from :: path)
+        case End => List(End :: nextPath)
+        case node: SmallCave => if (path.contains(node)) Nil else search1(node, nextPath)
+        case node: BigCave => search1(node, nextPath)
+      }
+    def search2(from: Node, path: List[Node] = List.empty): List[List[Node]] = 
+      val nextPath = from :: path
+      go(from).flatMap {
+        case Start => Nil
+        case End => List(End :: nextPath)
+        case node: SmallCave => 
+          val pathWithDups = nextPath.filter(_.isInstanceOf[SmallCave]).groupBy(identity).mapValues(_.size).exists((_, i) => i > 1)
+          if (pathWithDups)
+            if (path.contains(node)) Nil else search2(node, nextPath)
+          else
+            if (path.count(_ == node) == 2) Nil else search2(node, nextPath)
+        case node: BigCave => search2(node, nextPath)
       }
 
   def parse(input: List[String]): Graph =
@@ -42,9 +56,10 @@ object Day12:
     Graph(all.groupBy(_._1).mapValues(_.map(_._2)).toMap)
 
   def part1(input: List[String]): Int = 
-    parse(input).searchFrom(Start).count(_ == End)
+    parse(input).search1(Start).size
 
-  def part2(input: List[String]): Int = ???
+  def part2(input: List[String]): Int =
+    parse(input).search2(Start).size
 
 @main def main12: Unit = 
   val input = Source.fromFile("input/day12.txt").getLines.toList
