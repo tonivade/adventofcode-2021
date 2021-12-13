@@ -42,7 +42,7 @@ object Day13:
       }
     }
   
-  def applyFirstFold(map: List[List[Int]], fold: Fold): List[List[Int]] =
+  def applyFold(map: List[List[Int]], fold: Fold): List[List[Int]] =
     fold match {
       case FoldX(x) => 
         val s = map.map(_.splitAt(x))
@@ -57,13 +57,27 @@ object Day13:
       case Array(d, f) => (parseDots(d), parseFolds(f))
     }
     val map = printDots(dots)
-    applyFirstFold(map, folds(0)).flatMap(identity).count(_ > 0)
+    val firstFold = applyFold(map, folds(0))
+    firstFold.flatMap(identity).count(_ > 0)
 
-  def part2(input: String): Int = ???
+  def part2(input: String): String = 
+    val (dots, folds) = input.split("\n\n") match {
+      case Array(d, f) => (parseDots(d), parseFolds(f))
+    }
+    val map = printDots(dots)
+
+    val result = folds.foldLeft(map) {
+      (m, f) => applyFold(m, f)
+    }
+
+    result.map(_.map {
+      case 0 => '.'
+      case _ => '#'
+    }).map(_.mkString).mkString("\n")
 
 @main def main13: Unit = 
   val input = Source.fromFile("input/day13.txt").mkString
 
   println(s"Day13 part1: ${Day13.part1(input)}")
-  println(s"Day13 part2: ${Day13.part2(input)}")
+  println(s"Day13 part2: \n${Day13.part2(input)}")
   

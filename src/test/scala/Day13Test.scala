@@ -30,4 +30,11 @@ class Day13Test:
     assertEquals(17, Day13.part1(input))
 
   @Test def part2(): Unit = 
-    assertEquals(0, Day13.part2(input))
+    val expected = """#####
+                     |#...#
+                     |#...#
+                     |#...#
+                     |#####
+                     |.....
+                     |.....""".stripMargin
+    assertEquals(expected, Day13.part2(input))
