@@ -42,14 +42,14 @@ object Day13:
       }
     }
   
-  def applyFold(map: List[List[Int]], fold: Fold): List[List[Int]] =
+  def fold(map: List[List[Int]], fold: Fold): List[List[Int]] =
     fold match {
       case FoldX(x) => 
         val s = map.map(_.splitAt(x))
-        mergeX(s.map(_._1), s.map(_._2.tail))
+        mergeX(s.map((left, _) => left), s.map((_, right) => right.tail))
       case FoldY(y) => 
-        val s = map.splitAt(y)
-        mergeY(s._1, s._2.tail)
+        val (top, bottom) = map.splitAt(y)
+        mergeY(top, bottom.tail)
     }
 
   def part1(input: String): Int = 
@@ -57,7 +57,7 @@ object Day13:
       case Array(d, f) => (parseDots(d), parseFolds(f))
     }
     val map = printDots(dots)
-    val firstFold = applyFold(map, folds(0))
+    val firstFold = fold(map, folds(0))
     firstFold.flatMap(identity).count(_ > 0)
 
   def part2(input: String): String = 
@@ -66,9 +66,7 @@ object Day13:
     }
     val map = printDots(dots)
 
-    val result = folds.foldLeft(map) {
-      (m, f) => applyFold(m, f)
-    }
+    val result = folds.foldLeft(map)(fold)
 
     result.map(_.map {
       case 0 => '.'
