@@ -19,9 +19,9 @@ object Day14:
     val m = mutable.Map.from(pairs)
     pairs.foreach {
       case ((a, b), c) => 
-        m.updateWith(a, mapping(a, b))(x => x.map(_ + c).orElse(Some(c)))
-        m.updateWith(mapping(a, b), b)(x => x.map(_ + c).orElse(Some(c)))
-        m.updateWith(a, b)(x => x.map(_ - c).filterNot(_ == 0))
+        m.updateWith(a, mapping(a, b))(_.map(_ + c).orElse(Some(c)))
+        m.updateWith(mapping(a, b), b)(_.map(_ + c).orElse(Some(c)))
+        m.updateWith(a, b)(_.map(_ - c).filterNot(_ == 0))
     }
     Map.from(m)
 
