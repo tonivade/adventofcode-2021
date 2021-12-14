@@ -15,18 +15,15 @@ object Day14:
       case (a, b) => s"$a${mapping(a, b)}"
     }.mkString + seed.last
 
-  def step2(pairs: Map[(Char, Char), Long], mapping: Map[(Char, Char), Char]): Map[(Char, Char), Long] = 
+  def step2(pairs: Map[(Char, Char), BigInt], mapping: Map[(Char, Char), Char]): Map[(Char, Char), BigInt] = 
     val m = mutable.Map.from(pairs)
     pairs.foreach {
       case ((a, b), c) => 
         m.updateWith(a, mapping(a, b))(x => x.map(_ + c).orElse(Some(c)))
         m.updateWith(mapping(a, b), b)(x => x.map(_ + c).orElse(Some(c)))
-        m.updateWith(a, b)(x => x.map(_ - c))
+        m.updateWith(a, b)(x => x.map(_ - c).filterNot(_ == 0))
     }
-    Map.from(m).filter {
-      case (_, 0) => false
-      case _ => true
-    }
+    Map.from(m)
 
   def go(n: Int, seed: String, mapping: Map[(Char, Char), Char]): String =
     if (n > 0)
@@ -35,7 +32,7 @@ object Day14:
     else
       seed
 
-  def go2(n: Int, pairs: Map[(Char, Char), Long], mapping: Map[(Char, Char), Char]): Map[(Char, Char), Long] =
+  def go2(n: Int, pairs: Map[(Char, Char), BigInt], mapping: Map[(Char, Char), Char]): Map[(Char, Char), BigInt] =
     if (n > 0)
       val next = step2(pairs, mapping)
       go2(n - 1, next, mapping)
@@ -47,8 +44,8 @@ object Day14:
       case Array(s, m) => (s, parseMappings(m.split("\n").toList))
     }
 
-  def pairs(input: String): Map[(Char, Char), Long] =
-    (input.dropRight(1) zip input.tail).groupBy(identity).mapValues(_.size.toLong).toMap
+  def pairs(input: String): Map[(Char, Char), BigInt] =
+    (input.dropRight(1) zip input.tail).groupBy(identity).mapValues(x => BigInt(x.size)).toMap
 
   def part1(input: String): Int = 
     val (seed, mapping) = parse(input)
@@ -58,13 +55,13 @@ object Day14:
     val min = total.values.min
     max - min
 
-  def part2(input: String): Long =
+  def part2(input: String): BigInt =
     val (seed, mapping) = parse(input)
     val polymer = go2(40, pairs(seed), mapping)
-    val total = polymer.foldLeft(Map.empty[Char, Long]) {
+    val total = polymer.foldLeft(Map.empty[Char, BigInt]) {
       case (map, ((a, b), c)) => 
-        map.updatedWith(a)(o => o.map(_ + (c / 2)).orElse(Some((c / 2))))
-           .updatedWith(b)(o => o.map(_ + (c / 2)).orElse(Some((c / 2))))
+        map.updatedWith(a)(_.map(_ + (c / 2)).orElse(Some(c / 2)))
+           .updatedWith(b)(_.map(_ + (c / 2)).orElse(Some(c / 2)))
     }
     val max = total.values.toList.max
     val min = total.values.toList.min

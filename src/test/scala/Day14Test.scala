@@ -34,7 +34,7 @@ class Day14Test:
     assertEquals("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB", Day14.go(4, seed, mapping))
 
   @Test def part2(): Unit = 
-    assertEquals(2188189693529L, Day14.part2(input))
+    assertEquals(BigInt(2188189693529L), Day14.part2(input))
 
   @Test def step1_part2(): Unit = 
     val mapping = Map(('N', 'N') -> 'C', ('N', 'C') -> 'B', ('C', 'B') -> 'H')
