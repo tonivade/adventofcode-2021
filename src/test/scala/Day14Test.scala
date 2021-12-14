@@ -26,7 +26,7 @@ class Day14Test:
     assertEquals(1588, Day14.part1(input))
 
   @Test def step1(): Unit = 
-    val mapping = Map("NN" -> "C", "NC" -> "B", "CB" -> "H")
+    val mapping = Map(('N', 'N') -> 'C', ('N', 'C') -> 'B', ('C', 'B') -> 'H')
     assertEquals("NCNBCHB", Day14.step("NNCB", mapping))
 
   @Test def step4(): Unit = 
@@ -34,4 +34,12 @@ class Day14Test:
     assertEquals("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB", Day14.go(4, seed, mapping))
 
   @Test def part2(): Unit = 
-    assertEquals(0, Day14.part2(input))
+    assertEquals(2188189693529L, Day14.part2(input))
+
+  @Test def step1_part2(): Unit = 
+    val mapping = Map(('N', 'N') -> 'C', ('N', 'C') -> 'B', ('C', 'B') -> 'H')
+    assertEquals(Day14.pairs("NCNBCHB"), Day14.step2(Day14.pairs("NNCB"), mapping))
+
+  @Test def step4_part2(): Unit = 
+    val (seed, mapping) = Day14.parse(input)
+    assertEquals(Day14.pairs("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"), Day14.go2(4, Day14.pairs("NNCB"), mapping))
