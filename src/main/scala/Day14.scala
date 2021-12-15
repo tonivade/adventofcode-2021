@@ -1,7 +1,6 @@
 import scala.io.Source
 import scala.collection.mutable
 import scala.annotation.tailrec
-import java.math.MathContext
 import scala.math.BigDecimal.RoundingMode
 
 object Day14:
