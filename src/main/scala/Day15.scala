@@ -86,7 +86,36 @@ object Day15:
 
     path.map(points).sum
 
-  def part2(input: List[String]): Int = ???
+  def part2(input: List[String]): Int =
+    val grid = input.map(_.map(_.toString.toInt))
+
+    val col = (0 until 5).flatMap {
+      y => grid.map {
+        line => line.map {
+          i => 
+            val j = i + y
+            if (j > 9)
+              j - 9
+            else 
+              j 
+        }
+      }
+    }
+
+    val rows = col.map {
+      line => (0 until 5).flatMap {
+        x => line.map {
+          i => 
+            val j = i + x
+            if (j > 9)
+              j - 9
+            else
+              j
+        }
+      }
+    }
+
+    part1(rows.map(_.mkString).toList)
 
 @main def main15: Unit = 
   val input = Source.fromFile("input/day15.txt").getLines.toList
