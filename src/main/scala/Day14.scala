@@ -1,5 +1,6 @@
 import scala.io.Source
 import scala.collection.mutable
+import scala.annotation.tailrec
 
 object Day14:
 
@@ -25,6 +26,7 @@ object Day14:
     }
     Map.from(m)
 
+  @tailrec
   def go(n: Int, seed: String, mapping: Map[(Char, Char), Char]): String =
     if (n > 0)
       val next = step(seed, mapping)
@@ -32,6 +34,7 @@ object Day14:
     else
       seed
 
+  @tailrec
   def go2(n: Int, pairs: Map[(Char, Char), BigInt], mapping: Map[(Char, Char), Char]): Map[(Char, Char), BigInt] =
     if (n > 0)
       val next = step2(pairs, mapping)
