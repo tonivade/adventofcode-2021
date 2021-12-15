@@ -15,7 +15,7 @@ class Day15Test:
                 |2311944581""".stripMargin.split("\n").toList
 
   @Test def part1(): Unit = 
-    assertEquals(0, Day15.part1(input))
+    assertEquals(40, Day15.part1(input))
 
   @Test def part2(): Unit = 
     assertEquals(0, Day15.part2(input))
