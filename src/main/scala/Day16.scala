@@ -62,21 +62,25 @@ object Day16:
             val bitLength = binaryToInt(binary.drop(3 + 3 + 1).take(15))
             val bits = binary.drop(3 + 3 + 1 + 15).take(bitLength)
             val (packets, consumed) = parseMany(bits)
-            println(s"bits ${bitLength} == ${consumed}")
             assert(bitLength == consumed)
             (Operator(version, packets), 3 + 3 + 1 + 15 + bitLength)
           // packets
           case '1' => 
             val packetLength = binaryToInt(binary.drop(3 + 3 + 1).take(11))
             val bits = binary.drop(3 + 3 + 1 + 11)
-            val (packets, consumed) = parseMany(bits)
-            println(s"packets ${packets.size} == ${packetLength}")
-            if (packets.size != packetLength)
-              println(binary)
-            assert(packets.size == packetLength)
+            val (packets, consumed) = parseMany(bits, packetLength)
+            assert(packetLength == packets.size)
             (Operator(version, packets), 3 + 3 + 1 + 11 + consumed)
         }
     }
+
+  def parseMany(binary: String, size: Int): (List[Packet], Int) = 
+    if (size == 0)
+      (Nil, 0)
+    else
+      val (head, consumed) = parseOne(binary)
+      val (tail, consumeAll) = parseMany(binary.drop(consumed), size - 1)
+      (head :: tail, consumed + consumeAll)
 
   def parseMany(binary: String): (List[Packet], Int) = 
     if (binary.length < 6)
