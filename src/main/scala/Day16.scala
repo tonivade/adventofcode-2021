@@ -1,5 +1,4 @@
 import scala.io.Source
-import scala.annotation.tailrec
 
 object Day16:
 
@@ -104,8 +103,8 @@ object Day16:
     def eval(packet: Packet): Long =
       packet match {
         case Literal(_, value) => value
-        case Operator(_, 0, packets) => packets.map(eval).foldLeft(0L)(_ + _)
-        case Operator(_, 1, packets) => packets.map(eval).foldLeft(1L)(_ * _)
+        case Operator(_, 0, packets) => packets.map(eval).sum
+        case Operator(_, 1, packets) => packets.map(eval).product
         case Operator(_, 2, packets) => packets.map(eval).min
         case Operator(_, 3, packets) => packets.map(eval).max
         case Operator(_, 5, List(a, b)) => if (eval(a) > eval(b)) 1L else 0L
