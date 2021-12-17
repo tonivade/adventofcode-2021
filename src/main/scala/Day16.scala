@@ -6,8 +6,7 @@ object Day16:
   def binaryToInt(binary: String): Int = 
     binary.reverse.zipWithIndex.filter((x, _) => x == '1').map((_, i) => 1 << i).sum
 
-  sealed trait Packet:
-    def version: Int
+  sealed trait Packet
 
   case class Literal(version: Int, value: Int) extends Packet
 
@@ -59,35 +58,33 @@ object Day16:
         binary.drop(3 + 3).charAt(0) match {
           // bits
           case '0' => 
-            val bitLength = binaryToInt(binary.drop(3 + 3 + 1).take(15))
-            val bits = binary.drop(3 + 3 + 1 + 15).take(bitLength)
-            val (packets, consumed) = parseMany(bits)
-            assert(bitLength == consumed)
-            (Operator(version, packets), 3 + 3 + 1 + 15 + bitLength)
+            val bitsLength = binaryToInt(binary.drop(3 + 3 + 1).take(15))
+            val bits = binary.drop(3 + 3 + 1 + 15).take(bitsLength)
+            val (packets, consumed) = parseBits(bits, bitsLength)
+            (Operator(version, packets), 3 + 3 + 1 + 15 + consumed)
           // packets
           case '1' => 
             val packetLength = binaryToInt(binary.drop(3 + 3 + 1).take(11))
             val bits = binary.drop(3 + 3 + 1 + 11)
-            val (packets, consumed) = parseMany(bits, packetLength)
-            assert(packetLength == packets.size)
+            val (packets, consumed) = parsePackets(bits, packetLength)
             (Operator(version, packets), 3 + 3 + 1 + 11 + consumed)
         }
     }
 
-  def parseMany(binary: String, size: Int): (List[Packet], Int) = 
+  def parsePackets(binary: String, size: Int): (List[Packet], Int) = 
     if (size == 0)
       (Nil, 0)
     else
       val (head, consumed) = parseOne(binary)
-      val (tail, consumeAll) = parseMany(binary.drop(consumed), size - 1)
+      val (tail, consumeAll) = parsePackets(binary.drop(consumed), size - 1)
       (head :: tail, consumed + consumeAll)
 
-  def parseMany(binary: String): (List[Packet], Int) = 
+  def parseBits(binary: String, size: Int): (List[Packet], Int) = 
     if (binary.length < 6)
       (Nil, 0)
     else
       val (head, consumed) = parseOne(binary)
-      val (tail, consumedAll) = parseMany(binary.drop(consumed))
+      val (tail, consumedAll) = parseBits(binary.drop(consumed), size - consumed)
       (head :: tail, consumed + consumedAll)
 
   def part1(input: String): Int =
