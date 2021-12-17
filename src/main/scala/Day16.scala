@@ -3,12 +3,15 @@ import scala.annotation.tailrec
 
 object Day16:
 
+  def binaryToLong(binary: String): Long = 
+    binary.reverse.zipWithIndex.filter((x, _) => x == '1').map((_, i) => 1L << i).sum
+
   def binaryToInt(binary: String): Int = 
     binary.reverse.zipWithIndex.filter((x, _) => x == '1').map((_, i) => 1 << i).sum
 
   sealed trait Packet
 
-  case class Literal(version: Int, value: Int) extends Packet
+  case class Literal(version: Int, value: Long) extends Packet
 
   case class Operator(version: Int, operation: Int, operands: List[Packet]) extends Packet
 
@@ -52,7 +55,7 @@ object Day16:
 
         val value = go(binary.drop(3 + 3))
         val consumed = 3 + 3 + value.size + (value.size / 4)
-        (Literal(version, binaryToInt(value)), consumed)
+        (Literal(version, binaryToLong(value)), consumed)
       // operator
       case _ => 
         binary.drop(3 + 3).charAt(0) match {
@@ -96,21 +99,21 @@ object Day16:
       }
     count(packet)
 
-  def part2(input: String): Int = 
+  def part2(input: String): Long = 
     val packet = parse(input)
-    def count(packet: Packet): Int =
+    def eval(packet: Packet): Long =
       packet match {
         case Literal(_, value) => value
-        case Operator(_, 0, packets) => packets.map(count).sum
-        case Operator(_, 1, packets) => packets.map(count).foldLeft(1)(_ * _)
-        case Operator(_, 2, packets) => packets.map(count).min
-        case Operator(_, 3, packets) => packets.map(count).max
-        case Operator(_, 5, List(a, b)) => if (count(a) > count(b)) 1 else 0
-        case Operator(_, 6, List(a, b)) => if (count(a) < count(b)) 1 else 0
-        case Operator(_, 7, List(a, b)) => if (count(a) == count(b)) 1 else 0
+        case Operator(_, 0, packets) => packets.map(eval).foldLeft(0L)(_ + _)
+        case Operator(_, 1, packets) => packets.map(eval).foldLeft(1L)(_ * _)
+        case Operator(_, 2, packets) => packets.map(eval).min
+        case Operator(_, 3, packets) => packets.map(eval).max
+        case Operator(_, 5, List(a, b)) => if (eval(a) > eval(b)) 1L else 0L
+        case Operator(_, 6, List(a, b)) => if (eval(a) < eval(b)) 1L else 0L
+        case Operator(_, 7, List(a, b)) => if (eval(a) == eval(b)) 1L else 0L
         case _ => throw new java.lang.IllegalArgumentException()
       }
-    count(packet)
+    eval(packet)
 
 @main def main16: Unit = 
   val input = Source.fromFile("input/day16.txt").getLines.next
