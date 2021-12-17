@@ -9,7 +9,7 @@ class Day16Test:
     assertEquals(Literal(6, 2021), parse("D2FE28"))
 
   @Test def parse2(): Unit =
-    assertEquals(Operator(1, List(Literal(6, 10), Literal(2, 20))), parse("38006F45291200"))
+    assertEquals(Operator(1, 6, List(Literal(6, 10), Literal(2, 20))), parse("38006F45291200"))
 
   @Test def part10(): Unit = 
     assertEquals(9, Day16.part1("38006F45291200"))

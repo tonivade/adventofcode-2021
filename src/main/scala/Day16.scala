@@ -10,7 +10,7 @@ object Day16:
 
   case class Literal(version: Int, value: Int) extends Packet
 
-  case class Operator(version: Int, operands: List[Packet]) extends Packet
+  case class Operator(version: Int, operation: Int, operands: List[Packet]) extends Packet
 
   val translation: Map[Char, String] = Map(
     '0' -> "0000",
@@ -61,13 +61,13 @@ object Day16:
             val bitsLength = binaryToInt(binary.drop(3 + 3 + 1).take(15))
             val bits = binary.drop(3 + 3 + 1 + 15).take(bitsLength)
             val (packets, consumed) = parseBits(bits, bitsLength)
-            (Operator(version, packets), 3 + 3 + 1 + 15 + consumed)
+            (Operator(version, typeId, packets), 3 + 3 + 1 + 15 + consumed)
           // packets
           case '1' => 
             val packetLength = binaryToInt(binary.drop(3 + 3 + 1).take(11))
             val bits = binary.drop(3 + 3 + 1 + 11)
             val (packets, consumed) = parsePackets(bits, packetLength)
-            (Operator(version, packets), 3 + 3 + 1 + 11 + consumed)
+            (Operator(version, typeId, packets), 3 + 3 + 1 + 11 + consumed)
         }
     }
 
@@ -92,11 +92,25 @@ object Day16:
     def count(packet: Packet): Int =
       packet match {
         case Literal(version, value) => version
-        case Operator(version, packets) => version + packets.map(count).sum
+        case Operator(version, _, packets) => version + packets.map(count).sum
       }
     count(packet)
 
-  def part2(input: String): Int = ???
+  def part2(input: String): Int = 
+    val packet = parse(input)
+    def count(packet: Packet): Int =
+      packet match {
+        case Literal(_, value) => value
+        case Operator(_, 0, packets) => packets.map(count).sum
+        case Operator(_, 1, packets) => packets.map(count).foldLeft(1)(_ * _)
+        case Operator(_, 2, packets) => packets.map(count).min
+        case Operator(_, 3, packets) => packets.map(count).max
+        case Operator(_, 5, List(a, b)) => if (count(a) > count(b)) 1 else 0
+        case Operator(_, 6, List(a, b)) => if (count(a) < count(b)) 1 else 0
+        case Operator(_, 7, List(a, b)) => if (count(a) == count(b)) 1 else 0
+        case _ => throw new java.lang.IllegalArgumentException()
+      }
+    count(packet)
 
 @main def main16: Unit = 
   val input = Source.fromFile("input/day16.txt").getLines.next
