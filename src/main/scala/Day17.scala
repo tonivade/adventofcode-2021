@@ -39,7 +39,7 @@ object Day17:
       val nextProbe = step(probe)
       launch(target)(nextProbe)
 
-  def search(input: String): Seq[(Probe, Speed)] = 
+  def search(input: String): Seq[Probe] = 
     val targetregex = """target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)""".r
     val target = input match {
       case targetregex(x1, x2, y1, y2) => Target(x1.toInt, x2.toInt, y1.toInt, y2.toInt)
@@ -49,10 +49,10 @@ object Day17:
       y <- target.y1 to target.y1.abs
     } yield (x, y)
 
-    all.map(Probe((0, 0), _)).map(p => launch(target)(p).map((_, p.speed))).flatMap(_.toList)
+    all.map(Probe((0, 0), _)).map(launch(target)).flatMap(_.toList)
 
   def part1(input: String): Int =
-    search(input).map(_._1.maxY).max
+    search(input).map(_.maxY).max
 
   def part2(input: String): Int = 
     search(input).size
