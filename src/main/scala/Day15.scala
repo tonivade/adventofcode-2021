@@ -48,7 +48,7 @@ object Day15:
     Map.from(index)
 
   def part1(input: List[String]): Int = 
-    val grid = input.map(_.map(_.toString.toInt))
+    val grid = input.map(_.map(_.asDigit))
 
     val width = grid(0).size
     val height = grid.size
@@ -87,7 +87,7 @@ object Day15:
     path.map(points).sum
 
   def part2(input: List[String]): Int =
-    val grid = input.map(_.map(_.toString.toInt))
+    val grid = input.map(_.map(_.asDigit))
 
     val col = (0 until 5).flatMap {
       y => grid.map {

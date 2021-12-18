@@ -42,7 +42,7 @@ object Day9:
     val all = for {
       i <- 0 until height
       j <- 0 until width
-    } yield (Position(i, j), input(i)(j).toString.toInt)
+    } yield (Position(i, j), input(i)(j).asDigit)
 
     all.toMap
 

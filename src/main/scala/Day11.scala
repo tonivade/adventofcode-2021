@@ -70,11 +70,11 @@ object Day11:
       n
 
   def part1(input: List[String]): Int =
-    val parsed = input.map(_.map(_.toString.toInt).toList)
+    val parsed = input.map(_.map(_.asDigit).toList)
     play(100, 0, Board(parsed))._1
 
   def part2(input: List[String]): Int =
-    val parsed = input.map(_.map(_.toString.toInt).toList)
+    val parsed = input.map(_.map(_.asDigit).toList)
     sync(0, Board(parsed))
 
 @main def main11: Unit = 

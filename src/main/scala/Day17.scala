@@ -27,6 +27,7 @@ object Day17:
         Probe((px + sx, py + sy), (sx + 1, sy - 1), (px, py) :: path)
       case Probe((px, py), (sx, sy), path) if (sx == 0) => 
         Probe((px + sx, py + sy), (sx, sy - 1), (px, py) :: path)
+      case _ => throw new IllegalStateException()
     }
 
   @tailrec
