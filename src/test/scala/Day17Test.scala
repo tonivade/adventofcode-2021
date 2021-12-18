@@ -1,6 +1,5 @@
 import org.junit.Test
 import org.junit.Assert.*
-import org.junit.Ignore
 
 class Day17Test:
   import Day17.{Target, Probe, launch }
