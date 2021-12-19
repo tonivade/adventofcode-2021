@@ -23,12 +23,10 @@ class Day18Test:
       Pair(Pair(Pair(Pair(Leaf(0),Leaf(9)),Leaf(2)),Leaf(3)),Leaf(4)), 
       Day18.reduce(Pair(Pair(Pair(Pair(Pair(Leaf(9),Leaf(8)),Leaf(1)),Leaf(2)),Leaf(3)),Leaf(4)))) 
 
-  @Test def reduce(): Unit = 
-    println("reduce")
-    val a = Day18.parse("[[[[4,3],4],4],[7,[[8,4],9]]]")
-    val b = Day18.parse("[1,1]")
-    val expected = Day18.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
-    assertEquals(expected, Day18.reduce(a add b))
+  @Test def part10(): Unit = 
+    assertEquals(Day18.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]"), 
+                 Day18.addAll("""[[[[4,3],4],4],[7,[[8,4],9]]]
+                                |[1,1]""".stripMargin.split("\n").toList))
 
   @Test def part11(): Unit = 
     assertEquals(Day18.parse("[[[[1,1],[2,2]],[3,3]],[4,4]]"), 
