@@ -27,7 +27,7 @@ object Day18:
 
     def updateLeft(toUpdate: Node, value: Int): Node =
       this match {
-        case Pair(left, right) if (left eq toUpdate) => Pair(left.addToLeft(value), right)
+        case Pair(left, right) if (left eq toUpdate) => Pair(left.addToRight(value), right)
         case Pair(left, right) => Pair(left.updateLeft(toUpdate, value), right.updateLeft(toUpdate, value))
         case _ => this
       }
