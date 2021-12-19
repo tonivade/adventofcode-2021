@@ -27,24 +27,22 @@ object Day18:
 
     def updateLeft(toUpdate: Node, value: Int): Node =
       this match {
-        case current if (current eq toUpdate) => Leaf(current.asInstanceOf[Leaf].value + value)
+        case Pair(current, right) if (current eq toUpdate) => Pair(current, right.addToLeft(value))
         case Pair(left, right) => Pair(left.updateLeft(toUpdate, value), right.updateLeft(toUpdate, value))
         case _ => this
       }
 
     def updateRight(toUpdate: Node, value: Int): Node =
       this match {
-        case Pair(left, current) if (current eq toUpdate) => Pair(Leaf(left.asInstanceOf[Leaf].value + value), current)
+        case Pair(left, current) if (current eq toUpdate) => Pair(left.addToRight(value), current)
         case Pair(left, right) => Pair(left.updateRight(toUpdate, value), right.updateRight(toUpdate, value))
         case _ => this
       }
     
     def explode(toExplode: Pair): Node =
       val (l, n, r) = _explode(toExplode)
-      println(s"l=$l,r=$r,n=$n")
       if (l > 0)
         val pathToExplode = path(toExplode).toList.flatMap(identity)
-        pathToExplode.foreach(println)
         val found = pathToExplode.flatMap { node =>
           def helper(n: Node): Option[Node] = 
             n match {
@@ -54,7 +52,6 @@ object Day18:
             }
           helper(node).toList
         }
-        println(s"found: $found")
         found match {
           case toUpdate :: tail => n.updateLeft(toUpdate, l)
           case _ => n
@@ -141,9 +138,7 @@ object Day18:
 
   @tailrec
   def reduce(node: Node): Node =
-    println("node:" + node)
     val action = toExplode(node) orElse toSplit(node)
-    println(action)
     action match {
       case Some(Split(leaf)) => reduce(node.split(leaf))
       case Some(Explode(pair)) => reduce(node.explode(pair))

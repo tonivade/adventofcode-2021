@@ -5,8 +5,6 @@ import org.junit.Ignore
 class Day18Test:
   import Day18.{ Pair, Leaf }
 
-  val input: String = """"""
-
   @Test def parse(): Unit = 
     assertEquals(Pair(Leaf(1), Leaf(2)), Day18.parse("[1,2]"))
     assertEquals(Pair(Pair(Leaf(1), Leaf(2)), Leaf(3)), Day18.parse("[[1,2],3]"))
@@ -20,8 +18,8 @@ class Day18Test:
 
   @Test def explode(): Unit =
     assertEquals(
-      Pair(Pair(Pair(Pair(Leaf(0),Leaf(9)),Leaf(2)),Leaf(3)),Leaf(4)), 
-      Day18.reduce(Pair(Pair(Pair(Pair(Pair(Leaf(9),Leaf(8)),Leaf(1)),Leaf(2)),Leaf(3)),Leaf(4)))) 
+      Pair(Pair(Pair(Pair(Leaf(0), Leaf(9)), Leaf(2)), Leaf(3)), Leaf(4)), 
+      Day18.reduce(Pair(Pair(Pair(Pair(Pair(Leaf(9), Leaf(8)), Leaf(1)), Leaf(2)), Leaf(3)), Leaf(4)))) 
 
   @Test def part10(): Unit = 
     assertEquals(Day18.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]"), 
