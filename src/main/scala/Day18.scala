@@ -41,8 +41,10 @@ object Day18:
     
     def explode(toExplode: Pair): Node =
       val (l, n, r) = _explode(toExplode)
+      println(s"l=$l,r=$r,n=$n")
       if (l > 0)
         val pathToExplode = path(toExplode).toList.flatMap(identity)
+        pathToExplode.foreach(println)
         val found = pathToExplode.flatMap { node =>
           def helper(n: Node): Option[Node] = 
             n match {
@@ -52,6 +54,7 @@ object Day18:
             }
           helper(node).toList
         }
+        println(s"found: $found")
         found match {
           case toUpdate :: tail => n.updateLeft(toUpdate, l)
           case _ => n
@@ -147,12 +150,17 @@ object Day18:
       case None => node
     }
 
-  def part1(input: String): Int = ???
+  def add(a: Node, b: Node): Node = reduce(a add b)
 
-  def part2(input: String): Int = ???
+  def addAll(input: List[String]): Node = input.map(parse).reduce(add)
+
+  def part1(input: List[String]): Int = 
+    1
+
+  def part2(input: List[String]): Int = ???
 
 @main def main18: Unit = 
-  val input = Source.fromFile("input/day18.txt").getLines.next
+  val input = Source.fromFile("input/day18.txt").getLines.toList
 
   println(s"Day18 part1: ${Day18.part1(input)}")
   println(s"Day18 part2: ${Day18.part2(input)}")
