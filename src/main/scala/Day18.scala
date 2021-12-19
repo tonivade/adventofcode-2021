@@ -80,11 +80,11 @@ object Day18:
       this match {
         case Pair(left, right) if (left eq toExplode) => 
           (toExplode.left.asInstanceOf[Leaf].value,
-            Pair(Leaf(0), right.addToRight(toExplode.right.asInstanceOf[Leaf].value)),
+            Pair(Leaf(0), right.addToLeft(toExplode.right.asInstanceOf[Leaf].value)),
               0)
         case Pair(left, right) if (right eq toExplode) => 
           (0, 
-            Pair(left.addToLeft(toExplode.left.asInstanceOf[Leaf].value), Leaf(0)), 
+            Pair(left.addToRight(toExplode.left.asInstanceOf[Leaf].value), Leaf(0)), 
               toExplode.right.asInstanceOf[Leaf].value)
         case Pair(left, right) => 
           val (ll, l, lr) = left._explode(toExplode)
@@ -96,13 +96,13 @@ object Day18:
     def addToLeft(value: Int): Node = 
       this match {
         case Leaf(other) => Leaf(other + value)
-        case Pair(left, _) => left.addToLeft(value)
+        case Pair(left, right) => Pair(left.addToLeft(value), right)
       }
 
     def addToRight(value: Int): Node =
       this match {
         case Leaf(other) => Leaf(other + value)
-        case Pair(_, right) => right.addToRight(value)
+        case Pair(left, right) => Pair(left, right.addToRight(value))
       }
 
   case class Leaf(value: Int) extends Node
