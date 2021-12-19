@@ -102,7 +102,7 @@ object Day18:
     def addToRight(value: Int): Node =
       this match {
         case Leaf(other) => Leaf(other + value)
-        case Pair(_, right) => right.addToLeft(value)
+        case Pair(_, right) => right.addToRight(value)
       }
 
   case class Leaf(value: Int) extends Node
