@@ -18,6 +18,17 @@ class Day18Test:
     assertEquals(Pair(Pair(Leaf(5), Leaf(5)), Leaf(1)), Day18.reduce(Pair(Leaf(10), Leaf(1)))) 
     assertEquals(Pair(Pair(Leaf(5), Leaf(6)), Leaf(1)), Day18.reduce(Pair(Leaf(11), Leaf(1)))) 
 
+  @Test def explode(): Unit =
+    assertEquals(
+      Pair(Pair(Pair(Pair(Leaf(0),Leaf(9)),Leaf(2)),Leaf(3)),Leaf(4)), 
+      Day18.reduce(Pair(Pair(Pair(Pair(Pair(Leaf(9),Leaf(8)),Leaf(1)),Leaf(2)),Leaf(3)),Leaf(4)))) 
+
+  @Test def reduce(): Unit = 
+    val a = Day18.parse("[[[[4,3],4],4],[7,[[8,4],9]]]")
+    val b = Day18.parse("[1,1]")
+    val expected = Day18.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+    assertEquals(expected, Day18.reduce(a add b))
+
   @Test @Ignore def part1(): Unit = 
     assertEquals(0, Day18.part1(input))
 

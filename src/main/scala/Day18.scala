@@ -6,7 +6,7 @@ object Day18:
   sealed trait Node:
 
     def add(other: Node): Node = Pair(this, other)
-
+    
     def split(toSplit: Leaf): Node = 
       this match {
         case Leaf(value) if (this eq toSplit) => 
@@ -19,10 +19,24 @@ object Day18:
 
     def explode(toExplode: Pair): Node =
       this match {
-        case Pair(left, right) if (left eq toExplode) => ???
-        case Pair(left, right) if (right eq toExplode) => ???
+        case Pair(left, right) if (left eq toExplode) => 
+          Pair(Leaf(0), right.addToRight(toExplode.right.asInstanceOf[Leaf].value))
+        case Pair(left, right) if (right eq toExplode) => 
+          Pair(left.addToLeft(toExplode.left.asInstanceOf[Leaf].value), Leaf(0))
         case Pair(left, right) => Pair(left.explode(toExplode), right.explode(toExplode))
         case _ => this
+      }
+
+    def addToLeft(value: Int): Node = 
+      this match {
+        case Leaf(other) => Leaf(other + value)
+        case Pair(left, _) => left.addToLeft(value)
+      }
+
+    def addToRight(value: Int): Node =
+      this match {
+        case Leaf(other) => Leaf(other + value)
+        case Pair(_, right) => right.addToLeft(value)
       }
 
   case class Leaf(value: Int) extends Node
@@ -54,16 +68,17 @@ object Day18:
 
   def toExplode(node: Node, depth: Int = 0): Option[Action] = 
     node match {
-      case Pair(left, right) if (depth == 4) => Some(Explode(node.asInstanceOf[Pair]))
+      case Pair(Leaf(_), Leaf(_)) if (depth == 4) => Some(Explode(node.asInstanceOf[Pair]))
       case Pair(left, right) => toExplode(left, depth + 1) orElse toExplode(right, depth + 1)
       case _ => None
     }
 
+  @tailrec
   def reduce(node: Node): Node =
     val action = toExplode(node) orElse toSplit(node)
     action match {
-      case Some(Split(leaf)) => node.split(leaf)
-      case Some(Explode(pair)) => node.explode(pair)
+      case Some(Split(leaf)) => reduce(node.split(leaf))
+      case Some(Explode(pair)) => reduce(node.explode(pair))
       case None => node
     }
 
