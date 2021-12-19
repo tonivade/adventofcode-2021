@@ -17,14 +17,77 @@ object Day18:
         case _ => this
       }
 
+    def path(target: Node, path: List[Node] = Nil): Option[List[Node]] =
+      this match {
+        case current if (current eq target) => Some(path)
+        case Pair(left, right) => 
+          left.path(target, this :: path) orElse right.path(target, this :: path)
+        case _ => None
+      }
+
+    def updateLeft(toUpdate: Node, value: Int): Node =
+      this match {
+        case current if (current eq toUpdate) => Leaf(current.asInstanceOf[Leaf].value + value)
+        case Pair(left, right) => Pair(left.updateLeft(toUpdate, value), right.updateLeft(toUpdate, value))
+        case _ => this
+      }
+
+    def updateRight(toUpdate: Node, value: Int): Node =
+      this match {
+        case Pair(left, current) if (current eq toUpdate) => Pair(Leaf(left.asInstanceOf[Leaf].value + value), current)
+        case Pair(left, right) => Pair(left.updateRight(toUpdate, value), right.updateRight(toUpdate, value))
+        case _ => this
+      }
+    
     def explode(toExplode: Pair): Node =
+      val (l, n, r) = _explode(toExplode)
+      if (l > 0)
+        val pathToExplode = path(toExplode).toList.flatMap(identity)
+        val found = pathToExplode.flatMap { node =>
+          def helper(n: Node): Option[Node] = 
+            n match {
+              case Pair(left, _) if (left eq toExplode) => None
+              case Pair(left, _) => helper(left)
+              case current => Some(current)
+            }
+          helper(node).toList
+        }
+        found match {
+          case toUpdate :: tail => n.updateLeft(toUpdate, l)
+          case _ => n
+        }
+      else if (r > 0)
+        val pathToExplode = path(toExplode).toList.flatMap(identity)
+        val found = pathToExplode.flatMap { node =>
+          def helper(n: Node): Option[Node] = 
+            n match {
+              case Pair(_, right) if (right eq toExplode) => None
+              case Pair(_, right) => helper(right)
+              case current => Some(current)
+            }
+          helper(node).toList
+        }
+        found match {
+          case toUpdate :: tail => n.updateRight(toUpdate, r)
+          case _ => n
+        }
+      else n
+
+    def _explode(toExplode: Pair): (Int, Node, Int) =
       this match {
         case Pair(left, right) if (left eq toExplode) => 
-          Pair(Leaf(0), right.addToRight(toExplode.right.asInstanceOf[Leaf].value))
+          (toExplode.left.asInstanceOf[Leaf].value,
+            Pair(Leaf(0), right.addToRight(toExplode.right.asInstanceOf[Leaf].value)),
+              0)
         case Pair(left, right) if (right eq toExplode) => 
-          Pair(left.addToLeft(toExplode.left.asInstanceOf[Leaf].value), Leaf(0))
-        case Pair(left, right) => Pair(left.explode(toExplode), right.explode(toExplode))
-        case _ => this
+          (0, 
+            Pair(left.addToLeft(toExplode.left.asInstanceOf[Leaf].value), Leaf(0)), 
+              toExplode.right.asInstanceOf[Leaf].value)
+        case Pair(left, right) => 
+          val (ll, l, lr) = left._explode(toExplode)
+          val (rl, r, rr) = right._explode(toExplode)
+          (ll + rl, Pair(l, r), lr + rr)
+        case _ => (0, this, 0)
       }
 
     def addToLeft(value: Int): Node = 
@@ -75,7 +138,9 @@ object Day18:
 
   @tailrec
   def reduce(node: Node): Node =
+    println("node:" + node)
     val action = toExplode(node) orElse toSplit(node)
+    println(action)
     action match {
       case Some(Split(leaf)) => reduce(node.split(leaf))
       case Some(Explode(pair)) => reduce(node.explode(pair))
