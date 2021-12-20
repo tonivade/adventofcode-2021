@@ -70,14 +70,12 @@ object Day18:
       val (l, n, r) = _explode(toExplode)
       if (l > 0)
         val toUpdate = searchLeft(toExplode)
-        println("to update:" + toUpdate)
         toUpdate.map(_.leafToLeft) match {
           case Some(node) => n.update(node, l)
           case _ => n
         }
       else if (r > 0)
         val toUpdate = searchRight(toExplode)
-        println("to update:" + toUpdate)
         toUpdate.map(_.leafToRight) match {
           case Some(node) => n.update(node, r)
           case _ => n
@@ -150,7 +148,6 @@ object Day18:
   @tailrec
   def reduce(node: Node): Node =
     val action = toExplode(node) orElse toSplit(node)
-    println("action:" + action)
     action match {
       case Some(Split(leaf)) => reduce(node.split(leaf))
       case Some(Explode(pair)) => reduce(node.explode(pair))
@@ -161,10 +158,20 @@ object Day18:
 
   def addAll(input: List[String]): Node = input.map(parse).reduce(add)
 
-  def part1(input: List[String]): Int = 
-    1
+  def magnitude(node: Node): Int =
+    node match {
+      case Leaf(value) => value
+      case Pair(left, right) => (3 * magnitude(left)) + (2 * magnitude(right))
+    }
 
-  def part2(input: List[String]): Int = ???
+  def part1(input: List[String]): Int = 
+    val result = addAll(input)
+    magnitude(result)
+
+  def part2(input: List[String]): Int = 
+    val parsed = input.map(parse)
+    val x = parsed.combinations(2).map(_.reduce(add)).map(magnitude)
+    x.max
 
 @main def main18: Unit = 
   val input = Source.fromFile("input/day18.txt").getLines.toList
