@@ -20,28 +20,28 @@ object Day18:
     def explode(toExplode: Pair): Node =
       doExplode(toExplode) match {
         case (left, newNode, _) if (left > 0) =>
-          searchLeft(toExplode).map(_.leafToLeft) match {
+          searchLeft(toExplode).map(_.leafToRight) match {
             case Some(node) => newNode.update(node, left)
             case _ => newNode
           }
         case (_, newNode, right) if (right > 0) =>
-          searchRight(toExplode).map(_.leafToRight) match {
+          searchRight(toExplode).map(_.leafToLeft) match {
             case Some(node) => newNode.update(node, right)
             case _ => newNode
           }
         case (_, newNode, _) => newNode
       }
 
-    def leafToLeft: Leaf =
-      this match {
-        case leaf: Leaf => leaf
-        case Pair(_, right) => right.leafToLeft
-      }
-
     def leafToRight: Leaf =
       this match {
         case leaf: Leaf => leaf
-        case Pair(left, _) => left.leafToRight
+        case Pair(_, right) => right.leafToRight
+      }
+
+    def leafToLeft: Leaf =
+      this match {
+        case leaf: Leaf => leaf
+        case Pair(left, _) => left.leafToLeft
       }
 
     def searchLeft(target: Node, path: List[Node] = Nil): Option[Node] =
