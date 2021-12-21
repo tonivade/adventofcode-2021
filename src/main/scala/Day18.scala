@@ -48,13 +48,13 @@ object Day18:
       this match {
         case Pair(left, right) if (left eq target) => 
           @tailrec
-          def go(current: Node, path: List[Node]): Option[Node] =
+          def goUp(current: Node, path: List[Node]): Option[Node] =
             path match {
               case Pair(left, _) :: tail if (current ne left) => Some(left)
-              case head :: tail => go(head, tail)
+              case head :: tail => goUp(head, tail)
               case _ => None
             }
-          go(this, path)
+          goUp(this, path)
         case Pair(left, right) => left.searchLeft(target, this :: path) orElse right.searchLeft(target, this :: path)
         case _ => None
       }
@@ -63,13 +63,13 @@ object Day18:
       this match {
         case Pair(left, right) if (right eq target) => 
           @tailrec
-          def go(current: Node, path: List[Node]): Option[Node] =
+          def goUp(current: Node, path: List[Node]): Option[Node] =
             path match {
               case Pair(_, right) :: tail if (current ne right) => Some(right)
-              case head :: tail => go(head, tail)
+              case head :: tail => goUp(head, tail)
               case _ => None
             }
-          go(this, path)
+          goUp(this, path)
         case Pair(left, right) => left.searchRight(target, this :: path) orElse right.searchRight(target, this :: path)
         case _ => None
       }
