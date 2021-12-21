@@ -173,7 +173,7 @@ object Day18:
       a <- parsed
       b <- parsed
     } yield(a, b)
-    val combinations = all.filter((a, b) => a != b).map(_.toList)
+    val combinations = all.filter(_ != _).map(_.toList)
     combinations.map(_.reduce(add)).map(magnitude).max
 
 @main def main18: Unit = 
