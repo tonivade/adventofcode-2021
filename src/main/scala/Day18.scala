@@ -17,6 +17,21 @@ object Day18:
         case _ => this
       }
 
+    def explode(toExplode: Pair): Node =
+      doExplode(toExplode) match {
+        case (left, newNode, _) if (left > 0) =>
+          searchLeft(toExplode).map(_.leafToLeft) match {
+            case Some(node) => newNode.update(node, left)
+            case _ => newNode
+          }
+        case (_, newNode, right) if (right > 0) =>
+          searchRight(toExplode).map(_.leafToRight) match {
+            case Some(node) => newNode.update(node, right)
+            case _ => newNode
+          }
+        case (_, newNode, _) => newNode
+      }
+
     def leafToLeft: Leaf =
       this match {
         case leaf: Leaf => leaf
@@ -66,23 +81,7 @@ object Day18:
         case _ => this
       }
 
-    def explode(toExplode: Pair): Node =
-      val (l, n, r) = _explode(toExplode)
-      if (l > 0)
-        val toUpdate = searchLeft(toExplode)
-        toUpdate.map(_.leafToLeft) match {
-          case Some(node) => n.update(node, l)
-          case _ => n
-        }
-      else if (r > 0)
-        val toUpdate = searchRight(toExplode)
-        toUpdate.map(_.leafToRight) match {
-          case Some(node) => n.update(node, r)
-          case _ => n
-        }
-      else n
-
-    def _explode(toExplode: Pair): (Int, Node, Int) =
+    private def doExplode(toExplode: Pair): (Int, Node, Int) =
       this match {
         case Pair(left, right) if (left eq toExplode) => 
           (toExplode.left.asInstanceOf[Leaf].value,
@@ -93,19 +92,19 @@ object Day18:
             Pair(left.addToRight(toExplode.left.asInstanceOf[Leaf].value), Leaf(0)), 
               toExplode.right.asInstanceOf[Leaf].value)
         case Pair(left, right) => 
-          val (ll, l, lr) = left._explode(toExplode)
-          val (rl, r, rr) = right._explode(toExplode)
+          val (ll, l, lr) = left.doExplode(toExplode)
+          val (rl, r, rr) = right.doExplode(toExplode)
           (ll + rl, Pair(l, r), lr + rr)
         case _ => (0, this, 0)
       }
 
-    def addToLeft(value: Int): Node = 
+    private def addToLeft(value: Int): Node = 
       this match {
         case Leaf(other) => Leaf(other + value)
         case Pair(left, right) => Pair(left.addToLeft(value), right)
       }
 
-    def addToRight(value: Int): Node =
+    private def addToRight(value: Int): Node =
       this match {
         case Leaf(other) => Leaf(other + value)
         case Pair(left, right) => Pair(left, right.addToRight(value))
@@ -170,8 +169,12 @@ object Day18:
 
   def part2(input: List[String]): Int = 
     val parsed = input.map(parse)
-    val x = parsed.combinations(2).map(_.reduce(add)).map(magnitude)
-    x.max
+    val all = for {
+      a <- parsed
+      b <- parsed
+    } yield(a, b)
+    val combinations = all.filter((a, b) => a != b).map(_.toList)
+    combinations.map(_.reduce(add)).map(magnitude).max
 
 @main def main18: Unit = 
   val input = Source.fromFile("input/day18.txt").getLines.toList
