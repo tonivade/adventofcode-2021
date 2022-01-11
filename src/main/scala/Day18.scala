@@ -132,14 +132,14 @@ object Day18:
 
   def toSplit(node: Node): Option[Action] = 
     node match {
-      case Leaf(value) if (value > 9) => Some(Split(node.asInstanceOf[Leaf]))
+      case l @ Leaf(value) if (value > 9) => Some(Split(l))
       case Pair(left, right) => toSplit(left) orElse toSplit(right)
       case _ => None
     }
 
   def toExplode(node: Node, depth: Int = 0): Option[Action] = 
     node match {
-      case Pair(Leaf(_), Leaf(_)) if (depth == 4) => Some(Explode(node.asInstanceOf[Pair]))
+      case p @ Pair(Leaf(_), Leaf(_)) if (depth == 4) => Some(Explode(p))
       case Pair(left, right) => toExplode(left, depth + 1) orElse toExplode(right, depth + 1)
       case _ => None
     }
